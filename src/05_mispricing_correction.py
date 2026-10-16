@@ -206,8 +206,10 @@ def random_walk_null(simulations=NULL_SIMULATIONS, seed=0):
 
 def halflife_summary(fits, null):
 
-    b = fits["b"].stack().rename("b")
-    hl = fits["half_life"].stack().rename("half_life")
+    # Only stock-days that actually had a fit. (In recent pandas, stack()
+    # keeps empty cells, which would count stocks outside the universe.)
+    b = fits["b"].stack(future_stack=True).dropna().rename("b")
+    hl = fits["half_life"].stack(future_stack=True).rename("half_life")
     frame = b.to_frame().join(hl, how="left").reset_index()
     frame["year"] = frame["date"].dt.year
     critical = null["b_critical_5pct"]
