@@ -1,0 +1,20 @@
+step,value
+active common stocks,5320
+delisted common stocks,6651
+unique common stock tickers,11970
+daily files,1250
+rows in raw files (all tickers),13892691
+rows for common stocks,6630927
+rows with missing or non-positive price removed,0
+duplicate stock-days removed,0
+stock-days with a dividend,37823
+returns left missing because of a trading gap,78481
+returns set to missing for known corporate actions,2
+daily returns larger than 50% (flagged),6372
+months in universe,59
+first universe month,2021-12
+last universe month,2026-10
+smallest monthly universe,500
+unique stocks ever in universe,1199
+average new stocks entering per month,51.3
+stock-days saved for universe stocks,1316940
