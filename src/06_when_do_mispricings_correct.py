@@ -36,6 +36,7 @@ Run from the project folder:
 Needs: Steps 2, 2b, 4 and 5.
 
 Creates (for each model):
+  data/processed/conditional_panel_<model>.parquet   input for the R check (06b)
   outputs/tables/conditional_slopes_<model>.csv
   outputs/tables/conditional_differences_<model>.csv
   outputs/figures/news_vs_no_news_<model>.png
@@ -404,6 +405,38 @@ def plot_news_curve(s, residual_values, groups, model, path):
 
 
 # ============================================================
+# 4. PANEL FOR THE R CHECK
+# ============================================================
+
+def save_panel(s, forwards, groups, residual_wide, model):
+    """One row per stock-day with an s-score: the forward returns and every group label.
+
+    src/06b_panel_robustness.R re-estimates the same tests with panel
+    regressions and two-way clustered standard errors.
+    """
+    has_signal = ~np.isnan(s)
+    rows, cols = np.nonzero(has_signal)
+
+    panel = pd.DataFrame({
+        "date": residual_wide.index.to_numpy()[rows],
+        "ticker": residual_wide.columns.to_numpy()[cols],
+        "s_score": s[rows, cols],
+    })
+    for h in HORIZONS:
+        panel[f"fwd_{h}d"] = forwards[h][rows, cols]
+
+    for condition, members in groups.items():
+        if condition == "all":
+            continue
+        labels = np.full(s.shape, None, dtype=object)
+        for group, mask in members.items():
+            labels[mask] = group
+        panel[condition] = labels[rows, cols]
+
+    panel.to_parquet(PROCESSED_DIR / f"conditional_panel_{model}.parquet", index=False)
+
+
+# ============================================================
 # MAIN
 # ============================================================
 
@@ -446,6 +479,9 @@ def run_model(model, residuals, returns, universe, details, b_critical):
     slopes_table, differences_table = run_tests(s, forwards, groups)
     slopes_table.to_csv(TABLES_DIR / f"conditional_slopes_{model}.csv", index=False)
     differences_table.to_csv(TABLES_DIR / f"conditional_differences_{model}.csv", index=False)
+
+    print("  Saving the panel for the R robustness check...")
+    save_panel(s, forwards, groups, residual_wide, model)
 
     print("  Drawing the news chart...")
     plot_news_curve(s, values, groups, model, FIGURES_DIR / f"news_vs_no_news_{model}.png")
