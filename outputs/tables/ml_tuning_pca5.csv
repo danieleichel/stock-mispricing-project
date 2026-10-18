@@ -1,0 +1,13 @@
+model,setting,validation_ic
+ridge regression,alpha=1,-0.009731773545342456
+ridge regression,alpha=100,-0.009950045271086509
+ridge regression,alpha=10000,-0.008216826446160355
+ridge regression,alpha=1e+06,-0.006453661457664439
+gradient boosting,"max_iter=50, max_leaf_nodes=7",-0.006558891757022394
+gradient boosting,"max_iter=50, max_leaf_nodes=15",-0.013107171921133112
+gradient boosting,"max_iter=100, max_leaf_nodes=7",-0.01248888522539718
+gradient boosting,"max_iter=100, max_leaf_nodes=15",-0.0053272906127707215
+gradient boosting,"max_iter=200, max_leaf_nodes=7",-0.005167677547119529
+gradient boosting,"max_iter=200, max_leaf_nodes=15",-0.0032730215772227397
+gradient boosting,"max_iter=400, max_leaf_nodes=7",0.004147769421380905
+gradient boosting,"max_iter=400, max_leaf_nodes=15",0.0011782846562689827
