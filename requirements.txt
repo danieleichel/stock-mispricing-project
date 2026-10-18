@@ -4,3 +4,4 @@ numpy
 pyarrow
 matplotlib
 scikit-learn
+torch
